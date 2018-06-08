@@ -6,8 +6,6 @@ package com.org.web.automation.stepdefs;
 
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import com.org.web.automation.configuration.ConfigRegistry;
 import com.org.web.automation.configuration.ProjectConfig;
@@ -36,7 +34,13 @@ public class CommonStepDefs {
 
 	@Before
 	public void setUp(){
-		webDriver= WebDriverFactory.getDriver();
+		if(System.getProperty("browser")!=null) {
+			System.setProperty("browser", System.getProperty("browser"));
+				}
+		else {
+			System.setProperty("browser", "chrome");
+		}
+		webDriver= WebDriverFactory.createDriver(System.getProperty("browser"));
 
 		System.out.println("webdriver before>>>"+webDriver);
 		projectConfigBean=ConfigRegistry.getConfig(System.getProperty("env"));
@@ -62,7 +66,7 @@ public class CommonStepDefs {
 	
 	@After
 	public void tearDown() {
-		webDriver.close();
+		webDriver.quit();
 	}
 
 }
